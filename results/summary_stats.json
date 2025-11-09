@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-11-09 20:00:25",
+  "device": "cpu",
+  "num_optimizers": 5,
+  "num_datasets": 5,
+  "num_models": 2,
+  "main_benchmark_time_seconds": 0.058347225189208984,
+  "ablation_study_time_seconds": 2.3,
+  "total_time_seconds": 2.358347225189209,
+  "note": "Mock results generated for demonstration purposes"
+}
