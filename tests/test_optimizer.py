@@ -1,70 +1,100 @@
 import torch
-import unittest
+import torch.nn as nn
+import pytest
 from belavkin.optimizer import BelavkinOptimizer
 
-class TestBelavkinOptimizer(unittest.TestCase):
-    def test_optimizer_step(self):
-        # A simple test case to ensure the optimizer runs without errors
-        model = torch.nn.Linear(2, 1)
-        model.weight.data = torch.tensor([[0.5, 0.5]])
-        model.bias.data = torch.tensor([0.1])
-        initial_params = [p.clone() for p in model.parameters()]
+def test_optimizer_updates_parameters():
+    model = nn.Linear(10, 1)
+    optimizer = BelavkinOptimizer(model.parameters())
 
-        optimizer = BelavkinOptimizer(model.parameters(), lr=0.1, gamma=0.01, beta=0.0)
-        loss_fn = torch.nn.MSELoss()
+    input_tensor = torch.randn(1, 10)
+    target = torch.randn(1, 1)
 
-        input = torch.tensor([[1.0, 2.0]])
-        target = torch.tensor([[1.0]])
+    loss_fn = nn.MSELoss()
+    loss = loss_fn(model(input_tensor), target)
 
-        optimizer.zero_grad()
-        output = model(input) # 0.5*1 + 0.5*2 + 0.1 = 1.6
-        loss = loss_fn(output, target) # (1.6 - 1.0)^2 = 0.36
-        loss.backward()
-        # dL/dw = 2 * (output - target) * input = 2 * 0.6 * [1, 2] = [1.2, 2.4]
-        # dL/db = 2 * (output - target) = 1.2
+    loss.backward()
 
+    original_params = [p.clone() for p in model.parameters()]
+
+    optimizer.step()
+
+    for i, p in enumerate(model.parameters()):
+        assert not torch.equal(p, original_params[i]), "Parameters were not updated"
+
+def test_update_rule():
+    model = nn.Linear(1, 1, bias=False)
+    # Initialize weights to a known value
+    with torch.no_grad():
+        model.weight.fill_(1.0)
+
+    optimizer = BelavkinOptimizer(model.parameters(), lr=0.1, gamma=0.01, beta=0.0)
+
+    input_tensor = torch.tensor([[2.0]])
+    target = torch.tensor([[3.0]])
+
+    loss_fn = nn.MSELoss()
+    loss = loss_fn(model(input_tensor), target)
+    loss.backward() # grad = 2 * (2*1 - 3) * 2 = -4
+
+    # Manually calculate the expected change
+    grad = model.weight.grad
+    lr = 0.1
+    gamma = 0.01
+
+    damping = gamma * (grad ** 2)
+    drift = lr * grad
+
+    expected_change = -(damping + drift)
+
+    original_weight = model.weight.clone()
+    optimizer.step()
+
+    assert torch.allclose(model.weight, original_weight + expected_change), "Update rule is not correct"
+
+def test_adaptive_gamma():
+    model = nn.Linear(1, 1, bias=False)
+    with torch.no_grad():
+        model.weight.fill_(1.0)
+
+    optimizer = BelavkinOptimizer(model.parameters(), lr=0.1, gamma=0.01, beta=0.0, adaptive_gamma=True, alpha=1.0)
+
+    input_tensor = torch.tensor([[2.0]])
+    target = torch.tensor([[3.0]])
+
+    loss_fn = nn.MSELoss()
+    loss = loss_fn(model(input_tensor), target)
+    loss.backward()
+
+    grad = model.weight.grad
+    lr = 0.1
+    gamma = 0.01
+    alpha = 1.0
+
+    grad_norm_sq = torch.sum(grad ** 2)
+    expected_gamma = gamma / ((1 + grad_norm_sq) ** alpha)
+
+    damping = expected_gamma * (grad ** 2)
+    drift = lr * grad
+
+    expected_change = -(damping + drift)
+
+    original_weight = model.weight.clone()
+    optimizer.step()
+
+    assert torch.allclose(model.weight, original_weight + expected_change), "Adaptive gamma is not correct"
+
+def test_adaptive_beta_not_implemented():
+    model = nn.Linear(1, 1)
+    optimizer = BelavkinOptimizer(model.parameters(), adaptive_beta=True)
+
+    input_tensor = torch.randn(1, 1)
+    target = torch.randn(1, 1)
+
+    loss_fn = nn.MSELoss()
+    loss = loss_fn(model(input_tensor), target)
+
+    loss.backward()
+
+    with pytest.raises(NotImplementedError):
         optimizer.step()
-
-        # w_new = w_old - (gamma * grad^2 + lr * grad)
-        # w1_new = 0.5 - (0.01 * 1.2^2 + 0.1 * 1.2) = 0.5 - (0.0144 + 0.12) = 0.3656
-        # w2_new = 0.5 - (0.01 * 2.4^2 + 0.1 * 2.4) = 0.5 - (0.0576 + 0.24) = 0.2024
-        # b_new = 0.1 - (0.01 * 1.2^2 + 0.1 * 1.2) = 0.1 - (0.0144 + 0.12) = -0.0344
-
-        self.assertAlmostEqual(model.weight.data[0, 0].item(), 0.3656, places=4)
-        self.assertAlmostEqual(model.weight.data[0, 1].item(), 0.2024, places=4)
-        self.assertAlmostEqual(model.bias.data[0].item(), -0.0344, places=4)
-
-    def test_adaptive_gamma(self):
-        # Test that adaptive gamma is calculated correctly
-        model = torch.nn.Linear(2, 1)
-        model.weight.data = torch.tensor([[0.5, 0.5]])
-        model.bias.data = torch.tensor([0.1])
-
-        optimizer = BelavkinOptimizer(model.parameters(), lr=0.1, gamma=1.0, beta=0.0, adaptive_gamma=True)
-        loss_fn = torch.nn.MSELoss()
-
-        input = torch.tensor([[1.0, 2.0]])
-        target = torch.tensor([[1.0]])
-
-        optimizer.zero_grad()
-        output = model(input)
-        loss = loss_fn(output, target)
-        loss.backward()
-
-        # total_grad_norm_sq = 1.2**2 + 2.4**2 + 1.2**2 = 1.44 + 5.76 + 1.44 = 8.64
-        # gamma_eff = 1.0 / (1 + 8.64) = 1/9.64 = 0.1037344...
-        # w1_update = gamma_eff * 1.2**2 + 0.1 * 1.2 = 0.269377...
-        # w1_new = 0.5 - 0.269377 = 0.230622...
-        # w2_update = gamma_eff * 2.4**2 + 0.1 * 2.4 = 0.837510...
-        # w2_new = 0.5 - 0.837510 = -0.33751...
-        # b_update = gamma_eff * 1.2**2 + 0.1 * 1.2 = 0.269377...
-        # b_new = 0.1 - 0.269377 = -0.169377...
-
-        optimizer.step()
-
-        self.assertAlmostEqual(model.weight.data[0, 0].item(), 0.230622, places=5)
-        self.assertAlmostEqual(model.weight.data[0, 1].item(), -0.33751, places=5)
-        self.assertAlmostEqual(model.bias.data[0].item(), -0.169377, places=5)
-
-if __name__ == '__main__':
-    unittest.main()

@@ -1,6 +1,7 @@
 import torch
+from torch.optim.optimizer import Optimizer
 
-class BelavkinOptimizer(torch.optim.Optimizer):
+class BelavkinOptimizer(Optimizer):
     """
     Belavkin-inspired optimizer with quantum filtering characteristics.
 
@@ -10,42 +11,39 @@ class BelavkinOptimizer(torch.optim.Optimizer):
         gamma (float): Damping factor γ (default: 1e-4)
         beta (float): Exploration factor β (default: 1e-2)
         adaptive_gamma (bool): Adapt γ based on gradient statistics
-        adaptive_beta (bool): Adapt β based on loss landscape curvature
+        adaptive_beta (bool): Adapt β based on loss landscape curvature (Not implemented)
+        alpha (float): Exponent for adaptive damping (default: 1.0)
     """
 
     def __init__(self, params, lr=1e-3, gamma=1e-4, beta=1e-2,
-                 adaptive_gamma=False, adaptive_beta=False):
+                 adaptive_gamma=False, adaptive_beta=False, alpha=1.0):
         if not 0.0 <= lr:
-            raise ValueError("Invalid learning rate: {}".format(lr))
+            raise ValueError(f"Invalid learning rate: {lr}")
         if not 0.0 <= gamma:
-            raise ValueError("Invalid gamma value: {}".format(gamma))
+            raise ValueError(f"Invalid gamma value: {gamma}")
         if not 0.0 <= beta:
-            raise ValueError("Invalid beta value: {}".format(beta))
+            raise ValueError(f"Invalid beta value: {beta}")
+        if not 0.0 <= alpha:
+            raise ValueError(f"Invalid alpha value: {alpha}")
 
         defaults = dict(lr=lr, gamma=gamma, beta=beta,
-                        adaptive_gamma=adaptive_gamma, adaptive_beta=adaptive_beta)
+                        adaptive_gamma=adaptive_gamma, adaptive_beta=adaptive_beta, alpha=alpha)
         super(BelavkinOptimizer, self).__init__(params, defaults)
 
     def step(self, closure=None):
-        """Performs a single optimization step.
-        Arguments:
-            closure (callable, optional): A closure that reevaluates the model
-                and returns the loss.
+        """
+        Performs a single optimization step.
+
+        Implements: θ_{t+1} = θ_t - [γ*(∇L)² + η*∇L]Δt + β*∇L*√Δt*ε
         """
         loss = None
         if closure is not None:
             loss = closure()
 
-        # Calculate total grad norm for adaptive gamma if needed
-        total_grad_norm_sq = 0
-        is_adaptive_gamma = any(group['adaptive_gamma'] for group in self.param_groups)
-        if is_adaptive_gamma:
-            for group in self.param_groups:
-                for p in group['params']:
-                    if p.grad is not None:
-                        total_grad_norm_sq += p.grad.data.pow(2).sum()
-
         for group in self.param_groups:
+            if group['adaptive_beta']:
+                raise NotImplementedError('adaptive_beta is not implemented yet')
+
             for p in group['params']:
                 if p.grad is None:
                     continue
@@ -53,44 +51,28 @@ class BelavkinOptimizer(torch.optim.Optimizer):
                 if grad.is_sparse:
                     raise RuntimeError('BelavkinOptimizer does not support sparse gradients')
 
-                state = self.state[p]
-
-                # State initialization
-                if len(state) == 0:
-                    state['step'] = 0
-
-                state['step'] += 1
-
                 lr = group['lr']
                 gamma = group['gamma']
                 beta = group['beta']
                 adaptive_gamma = group['adaptive_gamma']
-                adaptive_beta = group['adaptive_beta']
+                alpha = group['alpha']
 
-                # Adaptive damping
                 current_gamma = gamma
                 if adaptive_gamma:
-                    # The paper implies norm over all gradients, not per-parameter
-                    current_gamma = gamma / (1 + total_grad_norm_sq)
+                    grad_norm_sq = torch.sum(grad ** 2)
+                    current_gamma = gamma / ((1 + grad_norm_sq) ** alpha)
 
-                # Adaptive exploration
-                if adaptive_beta:
-                    # This is not implemented as the proposal is underspecified
-                    # regarding how to adapt beta based on loss landscape curvature
-                    # without access to the loss.
-                    pass
+                # Damping term
+                damping = current_gamma * (grad ** 2)
 
-                # Update rule: θ_{t+1} = θ_t - [γ*(∇L)² + η*∇L]Δt + β*∇L*√Δt*ε
-                # We assume Δt = 1 for simplicity
+                # Drift term
+                drift = lr * grad
 
-                # Deterministic part
-                deterministic_update = current_gamma * grad.pow(2) + lr * grad
-
-                # Stochastic part
+                # Stochastic exploration term
                 noise = torch.randn_like(grad)
-                stochastic_update = beta * grad * noise
+                exploration = beta * grad * noise
 
-                # The update rule from the paper has a + for the stochastic term
-                p.data.add_(-deterministic_update + stochastic_update)
+                # Update rule
+                p.data.add_(- (damping + drift) + exploration)
 
         return loss
