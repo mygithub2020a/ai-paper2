@@ -1,0 +1,18 @@
+[project]
+name = "belavkin-optimizer"
+version = "0.1.0"
+description = "Implementation of the Belavkin-inspired optimizer."
+dependencies = [
+    "torch",
+    "numpy",
+    "pandas",
+    "matplotlib",
+    "jupyter",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["belavkin_optimizer", "belavkin_optimizer.optimizer", "belavkin_optimizer.benchmarks"]
