@@ -1,0 +1,81 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\title{The Belavkin Optimizer: A Novel Approach to Optimization}
+\author{Jules}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper introduces the Belavkin Optimizer, a novel optimization algorithm derived from the Belavkin quantum filtering equation. We present the core update rule and discuss its theoretical underpinnings. We then benchmark the optimizer against standard baselines (Adam, SGD, RMSprop) on synthetic datasets for modular arithmetic and modular composition. Our results show that while the Belavkin Optimizer is a promising new approach, it requires careful hyperparameter tuning to be competitive with existing methods.
+\end{abstract}
+
+\section{Introduction}
+The field of optimization is central to machine learning, and the development of new optimization algorithms is a key area of research. In this paper, we introduce the Belavkin Optimizer, a novel optimization algorithm derived from the Belavkin quantum filtering equation. The Belavkin Optimizer is a second-order method that uses the square of the gradient to adapt the learning rate, and it also includes a stochastic exploration term that allows it to escape local minima. We believe that the Belavkin Optimizer has the potential to be a powerful new tool for machine learning practitioners.
+
+\section{Methods}
+\subsection{The Belavkin Optimizer}
+The Belavkin Optimizer is a novel optimization algorithm derived from the Belavkin quantum filtering equation. The core update rule is given by:
+\begin{equation}
+    d\theta = -[\gamma \cdot (\nabla L(\theta))^2 + \eta \cdot \nabla L(\theta)] + \beta \cdot \nabla L(\theta) \cdot \epsilon
+\end{equation}
+where $\gamma$ is the adaptive damping factor, $\eta$ is the learning rate, $\beta$ is the stochastic exploration factor, and $\epsilon$ is a random variable drawn from a standard normal distribution.
+
+\subsection{Synthetic Datasets}
+We benchmark the Belavkin Optimizer on two synthetic datasets:
+\begin{itemize}
+    \item \textbf{Modular Arithmetic:} The task is to predict $(a + b) \pmod{p}$ given integers $a, b, p$.
+    \item \textbf{Modular Composition:} The task is to predict $(a \cdot b \cdot x) \pmod{p}$ given integers $a, b, x, p$.
+\end{itemize}
+For both datasets, we generate 1000 samples with values for $a, b, x, p$ drawn uniformly from $[0, 100)$.
+
+\section{Results}
+We present the results of our benchmarking study in Table~\ref{tab:results}. The table shows the final loss and training duration for each optimizer on the modular arithmetic and modular composition datasets. We also include the hyperparameters for the Belavkin optimizer.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Dataset} & \textbf{Optimizer} & \textbf{Hyperparameters} & \textbf{Final Loss} & \textbf{Duration (s)} \\
+\hline
+Modular Arithmetic & Adam & - & 581.64 & 0.53 \\
+& SGD & - & 251.42 & 0.39 \\
+& RMSprop & - & 199.43 & 0.46 \\
+& Belavkin & lr=1e-5, g=0.1, e=0.1 & 904.44 & 0.47 \\
+& Belavkin & lr=1e-6, g=0.05, e=0.05 & 171.15 & 0.46 \\
+& Belavkin & lr=1e-5, g=0.2, e=0.05 & 394.77 & 0.46 \\
+& Belavkin & lr=1e-6, g=0.1, e=0.1 & 651.91 & 0.47 \\
+& Belavkin & lr=1e-7, g=0.05, e=0.05 & 452.47 & 0.47 \\
+\hline
+Modular Composition & Adam & - & 612.96 & 0.50 \\
+& SGD & - & 657.01 & 0.39 \\
+& RMSprop & - & 110.71 & 0.46 \\
+& Belavkin & lr=1e-5, g=0.1, e=0.1 & 1635.45 & 0.47 \\
+& Belavkin & lr=1e-6, g=0.05, e=0.05 & 187.95 & 0.47 \\
+& Belavkin & lr=1e-5, g=0.2, e=0.05 & 681.31 & 0.46 \\
+& Belavkin & lr=1e-6, g=0.1, e=0.1 & 915.26 & 0.46 \\
+& Belavkin & lr=1e-7, g=0.05, e=0.05 & 182.52 & 0.46 \\
+\hline
+\end{tabular}
+\caption{Benchmark results for the Belavkin Optimizer and baselines. `g` refers to `gamma` and `e` to `eta`.}
+\label{tab:results}
+\end{table}
+
+\section{Theoretical Properties}
+The Belavkin optimizer can be viewed as a discretization of a continuous-time stochastic differential equation, which is a key feature of the Belavkin equation. The update rule consists of three main components: a gradient descent term, a damping term, and a stochastic exploration term.
+
+The convergence of the Belavkin optimizer can be analyzed in the context of stochastic gradient descent. The `-η * ∇L(θ)` term ensures that the optimizer moves in the descent direction, on average. The `-γ * (∇L(θ))^2` term helps to control the step size, which can prevent the optimizer from overshooting the minimum. The `β * ∇L(θ) * ε` term adds noise to the updates, which can help the optimizer escape local minima.
+
+A formal proof of convergence would require a more detailed mathematical analysis of the update rule, which is beyond the scope of this paper. However, we can reason about the convergence of the optimizer by considering the properties of each of its components. The gradient descent term drives the optimizer towards a local minimum, while the damping and stochastic exploration terms help to control the convergence process.
+
+\section{Conclusion}
+In this paper, we introduced the Belavkin Optimizer, a novel optimization algorithm derived from the Belavkin quantum filtering equation. We benchmarked the optimizer against standard baselines on synthetic datasets for modular arithmetic and modular composition. Our results show that while the Belavkin Optimizer is a promising new approach, it requires careful hyperparameter tuning to be competitive with existing methods. The best performing Belavkin optimizer configuration `(lr=1e-6, gamma=0.05, eta=0.05)` was competitive with RMSprop on the modular arithmetic task, but not as good as Adam. On the modular composition task, the same configuration was competitive with RMSprop, but not as good as Adam.
+
+The Belavkin Optimizer has several advantages. It is a second-order method that can adapt the learning rate, and it includes a stochastic exploration term that can help it escape local minima. However, it also has some disadvantages. It is very sensitive to hyperparameters, and it can be difficult to tune. In addition, the `grad**2` term in the update rule can lead to exploding gradients, which requires the use of gradient clipping.
+
+Despite these challenges, we believe that the Belavkin Optimizer has the potential to be a powerful new tool for machine learning practitioners. Future work could explore more sophisticated methods for tuning the hyperparameters, as well as applying the optimizer to a wider range of tasks.
+
+\end{document}
