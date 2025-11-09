@@ -1,0 +1,22 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter notebooks
+.ipynb_checkpoints
+
+# Virtual environments
+.env
+.venv
+venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Logs
+runs/
+*.log
