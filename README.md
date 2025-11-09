@@ -1,4 +1,4 @@
-Belavkin - two nnovel formulations
+Belavkin - two novel formulations
 1) as new optimizer 
 2) as new deep RL model
 
