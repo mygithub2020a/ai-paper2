@@ -1,0 +1,20 @@
+\section{Methods}
+
+The Belavkin Optimizer is based on the Belavkin equation, which is a stochastic differential equation that describes the evolution of a quantum system under continuous observation. The update rule for the Belavkin Optimizer is given by:
+
+\begin{equation}
+    d\theta = -[\gamma \cdot (\nabla L(\theta))^2 + \eta \cdot \nabla L(\theta)] + \beta \cdot \nabla L(\theta) \cdot \epsilon
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\theta$ represents the parameters of the model.
+    \item $L(\theta)$ is the loss function.
+    \item $\nabla L(\theta)$ is the gradient of the loss function with respect to the parameters.
+    \item $\gamma$ is the adaptive damping factor, which controls the contribution of the squared gradient term.
+    \item $\eta$ is the learning rate.
+    \item $\beta$ is the stochastic exploration factor, which controls the amount of noise added to the update.
+    \item $\epsilon$ is a random variable drawn from a standard normal distribution.
+\end{itemize}
+
+The first term in the update rule, $-[\gamma \cdot (\nabla L(\theta))^2 + \eta \cdot \nabla L(\theta)]$, is a deterministic term that is responsible for moving the parameters in the direction of the negative gradient. The second term, $\beta \cdot \nabla L(\theta) \cdot \epsilon$, is a stochastic term that is responsible for exploring the parameter space. The combination of these two terms allows the optimizer to efficiently find the minimum of the loss function while avoiding getting stuck in local minima.

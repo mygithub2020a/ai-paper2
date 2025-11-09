@@ -1,0 +1,19 @@
+\section{Results}
+
+We benchmarked the Belavkin Optimizer against Adam, SGD, and RMSprop on two synthetic datasets: modular arithmetic and modular composition. The results of our benchmarks are presented in the form of loss curves, which are shown in Figure~\ref{fig:mod_arith_loss} and Figure~\ref{fig:mod_comp_loss}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{modular_arithmetic_benchmark.png}
+    \caption{Loss curves for the modular arithmetic dataset.}
+    \label{fig:mod_arith_loss}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{modular_composition_benchmark.png}
+    \caption{Loss curves for the modular composition dataset.}
+    \label{fig:mod_comp_loss}
+\end{figure}
+
+As can be seen from the loss curves, the Belavkin Optimizer performs comparably to the other optimizers on the modular arithmetic dataset. On the modular composition dataset, the Belavkin Optimizer appears to converge more slowly than the other optimizers. However, it is important to note that the hyperparameters for the Belavkin Optimizer were not extensively tuned, and it is possible that with further tuning, the performance of the optimizer could be improved.
