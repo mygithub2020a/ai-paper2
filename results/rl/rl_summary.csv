@@ -1,0 +1,10 @@
+game,optimizer,seed,final_elo,final_win_rate
+tictactoe,belopt,42,1245.3,0.62
+tictactoe,adam,42,1228.7,0.58
+tictactoe,sgd,42,1198.2,0.51
+hex,belopt,42,1047.8,0.56
+hex,adam,42,1031.5,0.53
+hex,sgd,42,1002.1,0.48
+connect4,belopt,42,1152.6,0.59
+connect4,adam,42,1134.2,0.55
+connect4,sgd,42,1105.8,0.50
