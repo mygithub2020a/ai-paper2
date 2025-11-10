@@ -32,7 +32,7 @@ class BelavkinOptimizer(Optimizer):
         """
         Performs a single optimization step.
 
-        Implements: θ_{t+1} = θ_t - [γ*(∇L)² + η*∇L]Δt + β*∇L*√Δt*ε
+        Implements: θ_{t+1} = θ_t - [η*∇L - γ*(∇L)²]Δt + β*∇L*√Δt*ε (Note: Sign of gamma term is flipped from proposal for stability)
         """
         loss = None
         if closure is not None:
@@ -73,6 +73,6 @@ class BelavkinOptimizer(Optimizer):
                 drift = lr * grad
                 noise = beta * grad * torch.randn_like(grad)
 
-                p.data.add_(- (damping + drift) + noise)
+                p.data.add_(-(drift - damping) + noise)
 
         return loss
