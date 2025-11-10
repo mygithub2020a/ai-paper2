@@ -8,6 +8,9 @@ class BaseScheduler:
         raise NotImplementedError
 
 class ConstantScheduler(BaseScheduler):
+    def __init__(self, initial_value):
+        super().__init__(initial_value)
+
     def __call__(self, step):
         return self.initial_value
 
@@ -27,6 +30,6 @@ class InverseSqrtScheduler(BaseScheduler):
         self.warmup_steps = warmup_steps
 
     def __call__(self, step):
-        if step < self.warmup_steps:
+        if self.warmup_steps > 0 and step < self.warmup_steps:
             return self.initial_value * (step + 1) / self.warmup_steps
-        return self.initial_value / math.sqrt(step + 1)
+        return self.initial_value / math.sqrt(step + 1e-8)

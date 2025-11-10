@@ -1,0 +1,49 @@
+experiment:
+  base_name: supervised_ablations
+  num_seeds: 3
+  output_dir: results/
+
+grid:
+  optimizer.params.beta_scheduler.params.initial_value:
+    - 0.0
+    - 1e-4
+    - 1e-3
+  optimizer.params.gamma_scheduler.name:
+    - ConstantScheduler
+    - InverseSqrtScheduler
+
+data:
+  task: modular_addition
+  params:
+    p: 97
+    n_samples: 2000
+
+model:
+  name: MLP
+  params:
+    input_dim: 2
+    hidden_dim: 128
+    output_dim: 97
+    num_layers: 4
+
+optimizer:
+  name: BelOpt
+  params:
+    eta_scheduler:
+      name: CosineDecayScheduler
+      params:
+        initial_value: 1e-3
+        max_steps: 3130 # (2000 / 64) * 100
+    gamma_scheduler:
+      name: InverseSqrtScheduler # This will be overwritten by the grid
+      params:
+        initial_value: 1e-4
+    beta_scheduler:
+      name: ConstantScheduler # We will use a constant beta for this ablation
+      params:
+        initial_value: 1e-3 # This will be overwritten by the grid
+
+training:
+  epochs: 50
+  batch_size: 64
+  grad_clip: 1.0

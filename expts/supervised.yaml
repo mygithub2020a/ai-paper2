@@ -1,0 +1,59 @@
+experiment:
+  base_name: supervised_benchmarks
+  num_seeds: 5
+  output_dir: results/
+
+grid:
+  data.task:
+    - modular_addition
+    - modular_multiplication
+  optimizer.name:
+    - BelOpt
+    - Adam
+    - SGD
+    - RMSProp
+
+data:
+  # This section is a template; the grid will overwrite 'task'
+  task: modular_addition
+  params:
+    p: 97
+    n_samples: 2000
+
+model:
+  name: MLP
+  params:
+    input_dim: 2
+    hidden_dim: 128
+    output_dim: 97
+    num_layers: 4
+
+optimizer:
+  # This section is a template; the grid will overwrite 'name'
+  name: BelOpt
+  params:
+    # Default params for all optimizers
+    # BelOpt specific params are nested
+    eta_scheduler:
+      name: CosineDecayScheduler
+      params:
+        initial_value: 1e-3
+        max_steps: 3130 # (2000 / 64) * 100
+    gamma_scheduler:
+      name: InverseSqrtScheduler
+      params:
+        initial_value: 1e-4
+    beta_scheduler:
+      name: CosineDecayScheduler
+      params:
+        initial_value: 1e-3
+        max_steps: 3130
+
+    # Common params for other optimizers
+    lr: 1e-3
+    momentum: 0.9 # For SGD
+
+training:
+  epochs: 50 # Reduced for a quicker test run
+  batch_size: 64
+  grad_clip: 1.0
