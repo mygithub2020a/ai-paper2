@@ -1,0 +1,59 @@
+# Full supervised experiments as per spec
+
+experiment_name: "supervised_full"
+
+tasks:
+  - add
+  - mul
+  - inv
+  - composition
+
+moduli:
+  - 97
+  - 1009  # 10^3 + 9 (prime close to 10^3 + 3)
+  # - 1000003  # 10^6 + 3 (for large-scale tests)
+
+input_dims:
+  - 1
+  - 8
+  - 64
+
+model:
+  type: mlp_medium
+  hidden_dim: 128
+  n_layers: 4
+
+training:
+  epochs: 200
+  batch_size: 64
+  n_train: 20000
+
+optimizers:
+  belopt:
+    lr: 1e-3
+    gamma0: 1e-3
+    beta0: 0.0
+    deterministic: true
+
+  belopt_stochastic:
+    lr: 1e-3
+    gamma0: 1e-3
+    beta0: 1e-3  # With exploration noise
+    deterministic: false
+
+  adam:
+    lr: 1e-3
+
+  sgd:
+    lr: 1e-2
+    momentum: 0.9
+
+  rmsprop:
+    lr: 1e-3
+
+seeds:
+  - 42
+  - 43
+  - 44
+  - 45
+  - 46  # 5 seeds for statistical significance

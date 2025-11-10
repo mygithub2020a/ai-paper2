@@ -1,0 +1,43 @@
+# Small-scale supervised experiments for quick testing
+
+experiment_name: "supervised_small"
+
+tasks:
+  - add
+  - mul
+
+moduli:
+  - 97
+
+input_dims:
+  - 1
+  - 8
+
+model:
+  type: mlp_small
+  hidden_dim: 64
+  n_layers: 2
+
+training:
+  epochs: 50
+  batch_size: 32
+  n_train: 5000
+
+optimizers:
+  belopt:
+    lr: 1e-3
+    gamma0: 1e-3
+    beta0: 0.0
+    deterministic: true
+
+  adam:
+    lr: 1e-3
+
+  sgd:
+    lr: 1e-2
+    momentum: 0.9
+
+seeds:
+  - 42
+  - 43
+  - 44
