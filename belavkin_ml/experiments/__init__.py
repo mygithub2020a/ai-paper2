@@ -9,6 +9,5 @@ Includes:
 """
 
 from belavkin_ml.experiments.benchmark import OptimizerBenchmark
-from belavkin_ml.experiments.trainer import Trainer, TrainerConfig
 
-__all__ = ["OptimizerBenchmark", "Trainer", "TrainerConfig"]
+__all__ = ["OptimizerBenchmark"]
