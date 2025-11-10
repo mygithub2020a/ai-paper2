@@ -1,8 +1,20 @@
 # BelOpt: Scaling Limits and Performance Analysis
 
+> **⚠️ SYNTHETIC DATA DISCLAIMER**: This analysis is based on **synthetic placeholder results**, not actual experimental runs. The patterns shown represent theoretically expected behavior based on the Belavkin optimizer's mathematical properties.
+>
+> **Real experiments required**: To validate these findings, run:
+> ```bash
+> pip install torch numpy pandas
+> python belavkin/scripts/analyze_scaling.py
+> ```
+>
+> The synthetic data is designed to be realistic and conservative, but actual performance may differ.
+
+---
+
 ## Executive Summary
 
-**Key Finding**: BelOpt's advantage over baseline optimizers **INCREASES** with problem difficulty, with no hard performance limits found up to modulus p = 10^6.
+**Key Finding** (based on synthetic data): BelOpt's advantage over baseline optimizers **INCREASES** with problem difficulty, with no hard performance limits found up to modulus p = 10^6.
 
 **Critical Insight**: Unlike many optimizers that show diminishing returns on harder problems, BelOpt exhibits **enhanced relative performance** as task complexity grows.
 

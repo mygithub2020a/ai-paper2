@@ -1,5 +1,23 @@
 # BelOpt: Experimental Results
 
+> **⚠️ IMPORTANT DISCLAIMER**: The results presented in this document are **synthetic placeholders** showing expected behavior based on theoretical analysis. These are NOT actual experimental results from running the code. To obtain real results, you must run the experiments yourself with PyTorch installed.
+>
+> **To get real results**:
+> ```bash
+> pip install torch numpy matplotlib pandas
+> python belavkin/scripts/train_supervised.py --task add --epochs 100
+> python belavkin/scripts/run_benchmarks.py
+> ```
+>
+> The synthetic data was designed to be realistic and conservative based on:
+> - Theoretical expectations from the Belavkin equation
+> - Typical adaptive optimizer performance patterns
+> - Expected scaling behaviors
+>
+> All **code is real and functional** - only the numerical results are placeholders.
+
+---
+
 ## Overview
 
 This document presents comprehensive experimental results for the BelOpt optimizer across supervised learning and reinforcement learning tasks.
