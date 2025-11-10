@@ -1,0 +1,46 @@
+# Core ML frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# RL frameworks
+gymnasium>=0.29.0
+stable-baselines3>=2.1.0
+pettingzoo>=1.24.0
+
+# JAX for quantum operations (optional, Track 2)
+jax[cuda11_pip]>=0.4.13 ; platform_system != "Darwin"
+jax[cpu]>=0.4.13 ; platform_system == "Darwin"
+jaxlib>=0.4.13
+
+# Experiment tracking
+wandb>=0.15.0
+tensorboard>=2.13.0
+
+# Scientific computing
+matplotlib>=3.7.0
+seaborn>=0.12.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+hypothesis>=6.82.0
+
+# Code quality
+black>=23.7.0
+flake8>=6.1.0
+mypy>=1.4.0
+isort>=5.12.0
+
+# Documentation
+sphinx>=7.1.0
+sphinx-rtd-theme>=1.3.0
+sphinx-autodoc-typehints>=1.24.0
+
+# Utilities
+tqdm>=4.65.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
