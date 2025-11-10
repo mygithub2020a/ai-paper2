@@ -1,0 +1,20 @@
+% Abstract for Belavkin Optimizer paper
+
+We introduce a novel neural network optimizer inspired by quantum filtering principles
+from the Belavkin equation. While direct application of quantum mechanics to classical
+neural networks is intractable, we develop a computationally efficient heuristic that
+captures key information-theoretic insights. Our optimizer implements a unique update
+rule combining gradient-dependent damping (analogous to measurement backaction),
+standard gradient descent, and multiplicative stochastic exploration (state-dependent
+diffusion).
+
+We benchmark our approach on structured learning tasks including modular arithmetic
+and sparse parity problems, which exhibit phase transitions and grokking phenomena.
+Compared to standard optimizers (SGD, Adam, RMSprop), our method shows [RESULTS TBD].
+We analyze convergence properties, computational efficiency, and provide extensive
+ablation studies to understand which components contribute to performance.
+
+This work demonstrates that quantum-inspired heuristics can yield novel optimization
+algorithms with distinct training dynamics, though we emphasize our approach is a
+classical algorithm inspired by quantum principles rather than a quantum computing
+application.

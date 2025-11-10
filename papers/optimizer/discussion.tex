@@ -1,0 +1,68 @@
+% Discussion
+
+\subsection{When Does Belavkin Help?}
+
+Based on our experiments, the Belavkin optimizer shows advantages in [SCENARIOS TBD]:
+
+\TODO{Fill in based on actual results. Be honest about limitations.}
+
+Potential explanations:
+\begin{itemize}
+\item The gradient-dependent damping provides adaptive regularization
+\item Multiplicative noise helps escape poor local minima in structured problems
+\item The quantum-inspired balance of exploitation/exploration matches certain loss landscapes
+\end{itemize}
+
+\subsection{Limitations}
+
+We emphasize several important limitations:
+
+\paragraph{Classical Heuristic}
+Our optimizer is a \emph{heuristic inspired by} quantum filtering, not an application
+of quantum computing. The analogy between neural network optimization and quantum
+state estimation is suggestive but not rigorous.
+
+\paragraph{Additional Hyperparameters}
+Belavkin introduces two new hyperparameters ($\damping$, $\exploration$) beyond
+learning rate. While adaptive variants reduce tuning burden, this adds complexity.
+
+\paragraph{Task Specificity}
+Performance appears task-dependent. The optimizer may excel on structured problems
+with phase transitions but offer less advantage on standard supervised learning.
+
+\paragraph{Scalability}
+We have not yet tested on very large models (GPT-scale). The $O(p)$ complexity is
+promising, but practical benefits at scale remain to be demonstrated.
+
+\subsection{Theoretical Open Questions}
+
+Several theoretical questions merit further investigation:
+
+\begin{enumerate}
+\item \textbf{Convergence guarantees}: Under what assumptions does Belavkin converge?
+      Can we derive rates (e.g., $O(1/t)$ or $O(1/\sqrt{t})$)?
+
+\item \textbf{Connection to existing theory}: What is the precise relationship to:
+      \begin{itemize}
+      \item Natural gradient descent via Fisher information?
+      \item Langevin dynamics and sampling-based optimization?
+      \item Information geometry?
+      \end{itemize}
+
+\item \textbf{Generalization bounds}: Does the quantum-inspired noise provide
+      implicit regularization? Can we prove PAC-Bayes style generalization bounds?
+
+\item \textbf{Optimal hyperparameters}: Is there a principled way to set $\damping$
+      and $\exploration$ based on problem structure?
+\end{enumerate}
+
+\subsection{Broader Impact}
+
+This work explores novel optimization principles inspired by quantum physics applied
+to classical machine learning. Potential societal impacts are similar to other
+optimization research: improved training efficiency could reduce computational costs
+and environmental impact, but could also enable scaling to larger models with
+associated risks.
+
+We have made all code and data publicly available to support reproducibility and
+further research.

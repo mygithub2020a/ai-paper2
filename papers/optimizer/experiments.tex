@@ -1,0 +1,60 @@
+% Experimental Setup
+
+\subsection{Tasks}
+
+We evaluate on structured learning tasks that exhibit interesting learning dynamics:
+
+\paragraph{Modular Arithmetic}
+Learn $f(x, y) = (x + y) \mod p$ where $p$ is prime. This task exhibits
+\emph{grokking}~\cite{power2022grokking}---sudden generalization long after
+overfitting training data. We use $p \in \{13, 97\}$ with 50\% train/test split.
+
+\paragraph{Modular Composition}
+Learn $f(g(x))$ where $f, g$ are modular functions, testing compositional
+generalization.
+
+\paragraph{Sparse Parity}
+Learn $k$-sparse parity functions, testing sample efficiency. With $n = 10$ bits
+and $k = 3$ relevant bits, this requires discovering sparse structure.
+
+\subsection{Models}
+
+Simple MLPs with 2--3 hidden layers and 128--512 hidden units. All models use ReLU
+activations and are trained to minimize cross-entropy loss.
+
+\subsection{Baselines}
+
+\begin{itemize}
+\item \textbf{SGD} with momentum ($\beta = 0.9$)
+\item \textbf{Adam}~\cite{kingma2014adam} ($\beta_1 = 0.9$, $\beta_2 = 0.999$)
+\item \textbf{RMSprop}~\cite{tieleman2012rmsprop} ($\alpha = 0.99$)
+\item \textbf{AdamW}~\cite{loshchilov2017adamw} (weight decay $= 0.01$)
+\item \textbf{SGLD}~\cite{welling2011sgld} (temperature-controlled stochastic gradient Langevin dynamics)
+\end{itemize}
+
+\subsection{Hyperparameter Search}
+
+For all optimizers, we grid search over:
+\begin{itemize}
+\item Learning rates: $\{10^{-4}, 3 \times 10^{-4}, 10^{-3}, 3 \times 10^{-3}, 10^{-2}\}$
+\item Belavkin $\damping$: $\{10^{-5}, 10^{-4}, 10^{-3}, 10^{-2}\}$
+\item Belavkin $\exploration$: $\{10^{-3}, 10^{-2}, 10^{-1}\}$
+\end{itemize}
+
+Each configuration is run with 3 random seeds. Early stopping with patience of 30 epochs.
+
+\subsection{Metrics}
+
+\begin{enumerate}
+\item \textbf{Convergence speed}: Steps to reach 90\%, 95\%, 99\% test accuracy
+\item \textbf{Final performance}: Best test accuracy achieved
+\item \textbf{Stability}: Standard deviation across seeds
+\item \textbf{Sample efficiency}: Training examples needed for target accuracy
+\item \textbf{Generalization}: Train-test accuracy gap
+\item \textbf{Computational cost}: Wall-clock time per epoch
+\end{enumerate}
+
+\subsection{Implementation}
+
+Implemented in PyTorch 2.0. Experiments run on [HARDWARE TBD]. Code available at
+\url{https://github.com/mygithub2020a/ai-paper2}.

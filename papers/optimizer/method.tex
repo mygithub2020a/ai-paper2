@@ -1,0 +1,78 @@
+% Method: Belavkin Optimizer
+
+\subsection{Belavkin Equation Background}
+
+The Belavkin equation (also known as the quantum filtering equation) describes optimal
+state estimation for quantum systems under continuous measurement:
+\begin{equation}
+d\psi_t = -\left[\frac{1}{2}L^*L + \frac{i}{\hbar}H\right]\psi_t \, dt + L\psi_t \, dy_t
+\end{equation}
+where $\psi_t$ is the conditional quantum state, $H$ is the Hamiltonian, $L$ is the
+measurement operator, and $dy_t$ is the stochastic measurement innovation.
+
+\subsection{Classical Neural Network Adaptation}
+
+We draw inspiration from three key aspects of the Belavkin equation:
+
+\paragraph{Measurement Backaction}
+The term $L^*L$ represents measurement-induced disturbance. In our optimizer, we
+interpret strong gradients as "strong measurements" that should induce stronger
+regularization, leading to the damping term $\damping (\grad \loss)^2$.
+
+\paragraph{Deterministic Drift}
+The Hamiltonian term $iH/\hbar$ governs unitary evolution. We map this to standard
+gradient descent with learning rate $\eta$.
+
+\paragraph{State-Dependent Noise}
+The stochastic term $L\psi_t dy_t$ is multiplicative rather than additive, with noise
+magnitude proportional to the state. We implement this as $\exploration \cdot \grad \loss \cdot \epsilon_t$,
+where exploration scales with gradient magnitude.
+
+\subsection{Algorithm}
+
+\begin{algorithm}[h]
+\caption{Belavkin Optimizer}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Initial parameters $\params_0$, learning rate $\eta$,
+                       damping $\damping$, exploration $\exploration$
+\FOR{$t = 1, 2, \ldots$}
+  \STATE Compute gradient $g_t = \grad \loss(\params_t)$
+  \STATE Compute damping term: $d_t = \damping \cdot g_t \odot g_t$ \quad ($\odot$ is element-wise)
+  \STATE Sample noise: $\epsilon_t \sim \mathcal{N}(0, I)$
+  \STATE Compute stochastic term: $s_t = \exploration \cdot g_t \odot \epsilon_t$
+  \STATE Update parameters: $\params_{t+1} = \params_t - (d_t + \eta \cdot g_t) + s_t$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Adaptive Variants}
+
+\paragraph{Adaptive Damping}
+We adapt $\damping$ based on gradient magnitude:
+\begin{equation}
+\damping_t = \damping_0 \cdot (1 + \|\grad \loss\|^2)^{-\alpha}
+\end{equation}
+Strong gradients reduce damping, allowing larger updates when far from optima.
+
+\paragraph{Adaptive Exploration}
+We adapt $\exploration$ based on gradient variance (estimating loss landscape curvature):
+\begin{equation}
+\exploration_t = \frac{\exploration_0}{\sqrt{1 + \text{Var}(\grad \loss)}}
+\end{equation}
+High curvature reduces exploration to avoid instability.
+
+\subsection{Computational Complexity}
+
+Per-step complexity is $O(p)$ where $p$ is the number of parameters, identical to SGD
+and Adam. Memory overhead is minimal: we maintain running statistics for adaptation
+but no auxiliary buffers like Adam's second-moment estimates.
+
+\subsection{Theoretical Motivation}
+
+\TODO{Add discussion of connections to:}
+\begin{itemize}
+\item Natural gradient descent (Fisher information)
+\item Langevin dynamics (SGLD)
+\item Information geometry
+\item Convergence analysis (if available)
+\end{itemize}

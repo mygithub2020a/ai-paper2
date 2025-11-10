@@ -1,0 +1,43 @@
+% Shared LaTeX macros for Belavkin ML papers
+
+% Math operators
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+% Common symbols
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\loss}{\mathcal{L}}
+\newcommand{\data}{\mathcal{D}}
+\newcommand{\model}{\mathcal{M}}
+
+% Gradient and parameters
+\newcommand{\grad}{\nabla}
+\newcommand{\params}{\theta}
+\newcommand{\update}{\Delta}
+
+% Belavkin-specific notation
+\newcommand{\belavkin}{\text{Belavkin}}
+\newcommand{\damping}{\gamma}
+\newcommand{\exploration}{\beta}
+\newcommand{\belief}{\rho}
+
+% RL notation
+\newcommand{\state}{s}
+\newcommand{\action}{a}
+\newcommand{\reward}{r}
+\newcommand{\policy}{\pi}
+\newcommand{\value}{V}
+\newcommand{\qvalue}{Q}
+
+% Formatting
+\newcommand{\TODO}[1]{{\color{red}\textbf{TODO: }#1}}
+\newcommand{\NOTE}[1]{{\color{blue}\textbf{NOTE: }#1}}
+
+% Algorithm formatting
+\newcommand{\algname}[1]{\textsc{#1}}

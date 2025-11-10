@@ -1,0 +1,88 @@
+% Results
+
+\TODO{Fill in with actual experimental results}
+
+\subsection{Main Results}
+
+Table~\ref{tab:main_results} shows test accuracy for each optimizer on our benchmark tasks.
+
+\begin{table}[h]
+\centering
+\caption{Test accuracy (\%) on structured learning tasks. Mean $\pm$ std over 3 seeds with best hyperparameters.}
+\label{tab:main_results}
+\begin{tabular}{lccc}
+\toprule
+Optimizer & Modular Add & Modular Comp & Sparse Parity \\
+\midrule
+SGD       & TBD & TBD & TBD \\
+Adam      & TBD & TBD & TBD \\
+RMSprop   & TBD & TBD & TBD \\
+AdamW     & TBD & TBD & TBD \\
+SGLD      & TBD & TBD & TBD \\
+\midrule
+Belavkin  & TBD & TBD & TBD \\
+Adaptive  & TBD & TBD & TBD \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Learning Dynamics}
+
+Figure~\ref{fig:learning_curves} shows learning curves comparing our optimizer with baselines.
+
+\TODO{Add figure: Learning curves showing train/test accuracy over time}
+
+\subsection{Convergence Speed}
+
+Table~\ref{tab:convergence} reports steps required to reach target accuracy thresholds.
+
+\begin{table}[h]
+\centering
+\caption{Steps to reach target accuracy on modular addition ($p=97$).}
+\label{tab:convergence}
+\begin{tabular}{lrrr}
+\toprule
+Optimizer & 90\% & 95\% & 99\% \\
+\midrule
+Adam      & TBD & TBD & TBD \\
+Belavkin  & TBD & TBD & TBD \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablation Studies}
+
+We systematically ablate components to understand their contributions:
+
+\begin{itemize}
+\item \textbf{No damping} ($\damping = 0$): Reduces to noisy gradient descent
+\item \textbf{No exploration} ($\exploration = 0$): Deterministic with quadratic damping
+\item \textbf{Additive noise}: Replace $\exploration \cdot g \cdot \epsilon$ with $\exploration \cdot \epsilon$
+\item \textbf{Fixed parameters}: Disable adaptation mechanisms
+\end{itemize}
+
+\TODO{Add results showing contribution of each component}
+
+\subsection{Hyperparameter Sensitivity}
+
+Figure~\ref{fig:hyperparams} shows sensitivity to $\damping$ and $\exploration$.
+
+\TODO{Add figure: Heatmap or line plots showing performance vs hyperparameters}
+
+\subsection{Computational Cost}
+
+Table~\ref{tab:cost} compares wall-clock time and memory usage.
+
+\begin{table}[h]
+\centering
+\caption{Computational cost relative to Adam.}
+\label{tab:cost}
+\begin{tabular}{lrr}
+\toprule
+Optimizer & Time/Epoch & Memory \\
+\midrule
+Adam     & 1.00$\times$ & 1.00$\times$ \\
+Belavkin & TBD$\times$ & TBD$\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}

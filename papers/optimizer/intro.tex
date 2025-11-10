@@ -1,0 +1,46 @@
+% Introduction
+
+Optimization of neural networks remains a central challenge in machine learning, with
+algorithm choice significantly impacting training efficiency and final performance.
+While first-order methods like SGD and Adam dominate practice, there is ongoing
+interest in novel optimization principles that may offer advantages for specific
+problem classes or provide theoretical insights.
+
+In this work, we explore whether principles from \emph{quantum filtering theory}---
+specifically the Belavkin equation for optimal quantum state estimation---can inspire
+new neural network optimizers. The Belavkin equation describes how to optimally update
+a quantum state given continuous noisy measurements, balancing information gain against
+measurement-induced disturbance. This naturally suggests an optimization framework where:
+\begin{itemize}
+\item Parameters are analogous to quantum states
+\item Gradients are analogous to measurement signals
+\item Learning involves balancing exploration (uncertainty) with exploitation (gradient descent)
+\end{itemize}
+
+\paragraph{Key Challenges}
+Direct application of quantum filtering to classical neural networks faces fundamental obstacles:
+(1) density matrices scale as $O(d^2)$ for $d$ parameters---prohibitive for modern networks,
+(2) the classical-quantum analogy is heuristic rather than rigorous, and
+(3) most neural network learning does not naturally fit the continuous measurement framework.
+
+\paragraph{Our Approach}
+We develop a \emph{tractable approximation} that captures core principles while remaining
+computationally practical. Our optimizer implements the update rule:
+\begin{equation}
+\params_{t+1} = \params_t - [\damping \cdot (\grad \loss)^2 + \eta \cdot \grad \loss]\,dt
+                + \exploration \cdot \grad \loss \cdot \sqrt{dt} \cdot \epsilon_t
+\end{equation}
+where $\damping$ controls gradient-dependent damping, $\eta$ is the learning rate, and
+$\exploration$ controls multiplicative noise scaled by gradient magnitude.
+
+\paragraph{Contributions}
+\begin{enumerate}
+\item A novel optimizer derived from quantum filtering principles with efficient
+      $O(n)$ per-step complexity
+\item Adaptive variants that automatically tune hyperparameters based on gradient statistics
+\item Comprehensive benchmarks on tasks exhibiting phase transitions and grokking
+\item Ablation studies isolating contributions of damping, noise, and adaptation
+\item Honest assessment of when quantum inspiration helps vs. standard methods
+\end{enumerate}
+
+\TODO{Update with actual experimental findings once results are available}
