@@ -1,0 +1,11 @@
+task,optimizer,lr,gamma0,beta0,final_loss
+add,belopt,0.001,0.0,0.0,
+add,belopt,0.001,0.0,0.001,
+add,belopt,0.001,0.001,0.0,
+add,belopt,0.001,0.001,0.001,
+add,belopt,1e-06,0.0,0.0,1086.7748
+add,belopt,1e-06,0.0,0.001,
+add,belopt,1e-06,0.001,0.0,
+add,belopt,1e-06,0.001,0.001,
+add,adam,0.001,0.0,0.0,992.6526
+add,adam,1e-06,0.0,0.0,2398.825

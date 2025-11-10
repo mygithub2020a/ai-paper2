@@ -1,0 +1,6 @@
+task,optimizer,ablation,lr,mean_loss,std_loss
+add,belopt,Deterministic,1e-06,,
+add,belopt,Stochastic,1e-06,,
+add,belopt,Adaptive Gamma,1e-06,4331.57665,146.85545000000002
+add,belopt,Weight Decay,1e-06,,
+add,adam,baseline,0.001,1029.4582,13.63650000000007
