@@ -129,6 +129,21 @@ class OptimizerBenchmark:
                 model.parameters(), lr=lr, gamma=gamma, beta=beta
             )
 
+        elif optimizer_name in ['belavkin_with_quantum', 'belavkin_quantum']:
+            # Alias for Belavkin with quantum components active
+            gamma = kwargs.get('gamma', 1e-4)
+            beta = kwargs.get('beta', 1e-2)
+            adaptive_gamma = kwargs.get('adaptive_gamma', False)
+            adaptive_beta = kwargs.get('adaptive_beta', False)
+            return BelavkinOptimizer(
+                model.parameters(),
+                lr=lr,
+                gamma=gamma,
+                beta=beta,
+                adaptive_gamma=adaptive_gamma,
+                adaptive_beta=adaptive_beta,
+            )
+
         else:
             raise ValueError(f"Unknown optimizer: {optimizer_name}")
 
